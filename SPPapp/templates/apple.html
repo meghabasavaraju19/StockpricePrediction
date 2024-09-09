@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Apple Stock Prediction{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-success">Apple Stock Prediction</h1>
+    <form method="POST" action="{% url 'predict' 'apple' %}" class="bg-dark p-4 rounded border border-success">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Predict</button>
+    </form>
+
+    <div class="mt-4">
+        <h3 class="text-light">Previous Predictions</h3>
+        <table class="table table-striped table-bordered">
+            <thead class="bg-dark text-light">
+                <tr>
+                    <th style="color: #ffecb3;">Date</th>
+                    <th>Company</th>
+                    <th>Predicted Price</th>
+                </tr>
+            </thead>
+            <tbody class="text-danger">
+                {% for prediction in old_predictions %}
+                <tr>
+                    <td style="color: #ffecb3;">{{ prediction.created_at }}</td>
+                    <td>{{ prediction.company }}</td>
+                    <td>${{ prediction.predicted_price|floatformat:2 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center text-light bg-dark">No old predictions available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4">
+        <h3 class="text-light">Predicted Prices Variation</h3>
+        <canvas id="priceChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var ctx = document.getElementById('priceChart').getContext('2d');
+var priceChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ dates|safe }},
+        datasets: [{
+            label: 'Prices',
+            data: {{ prices|safe }},
+            backgroundColor: 'rgba(0, 255, 0, 0.2)', // Light green with transparency
+            borderColor: 'rgba(0, 255, 0, 1)', // Solid green
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#fff' // White ticks for x-axis
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#fff' // White ticks for y-axis
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#fff' // White legend labels
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

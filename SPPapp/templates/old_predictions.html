@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Old Predictions{% endblock %}
+
+{% block content %}
+<h1 class="text-center text-light bg-dark py-3">Old Predictions</h1>
+<p class="text-center text-muted">Review your past stock predictions and analyze trends over time.</p>
+
+<!-- Table for Old Predictions -->
+<div class="container mt-4">
+    <h3 class="text-center mb-4 text-light">Previous Predictions</h3>
+    <table class="table table-striped table-bordered">
+        <thead class="bg-dark text-light">
+            <tr>
+                <th style="color: #ffecb3;">Date</th> <!-- Light color for header -->
+                <th>Company</th>
+                <th>Predicted Price</th>
+            </tr>
+        </thead>
+        <tbody class="text-danger"> <!-- Set text color to red -->
+            {% for prediction in old_predictions %}
+            <tr>
+                <td style="color: #ffecb3;">{{ prediction.date }}</td> <!-- Light color for dates -->
+                <td>{{ prediction.company }}</td>
+                <td>${{ prediction.predicted_price|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center text-light bg-dark">No old predictions available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Chart for Predicted Prices -->
+<div class="container mt-4">
+    <h3 class="text-center mb-4 text-light">Predicted Prices Variation</h3>
+    <div class="chart-container">
+        <canvas id="predicted-prices-chart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('predicted-prices-chart').getContext('2d');
+
+        // Extract data from the context
+        var labels = {{ dates|safe }};
+        var datasets = [];
+
+        // Define an array of colors
+        var colors = [
+            'rgba(255, 99, 132, 0.2)', // Pink
+            'rgba(54, 162, 235, 0.2)', // Blue
+            'rgba(255, 206, 86, 0.2)', // Yellow
+            'rgba(75, 192, 192, 0.2)', // Green
+            'rgba(153, 102, 255, 0.2)', // Purple
+            'rgba(255, 159, 64, 0.2)'  // Orange
+        ];
+
+        var borderColors = [
+            'rgba(255, 99, 132, 1)', // Pink
+            'rgba(54, 162, 235, 1)', // Blue
+            'rgba(255, 206, 86, 1)', // Yellow
+            'rgba(75, 192, 192, 1)', // Green
+            'rgba(153, 102, 255, 1)', // Purple
+            'rgba(255, 159, 64, 1)'  // Orange
+        ];
+
+        // Add datasets with unique colors for each company
+        {% for company in chart_data %}
+        datasets.push({
+            label: '{{ company.name }}',
+            data: {{ company.prices|safe }},
+            borderColor: borderColors[datasets.length % borderColors.length], // Cycle through colors
+            backgroundColor: colors[datasets.length % colors.length], // Cycle through colors
+            borderWidth: 2
+        });
+        {% endfor %}
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff' // White text color
+                        },
+                        grid: {
+                            color: '#ddd'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#fff' // White text color
+                        },
+                        grid: {
+                            color: '#ddd'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

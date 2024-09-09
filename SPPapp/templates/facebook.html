@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Facebook Stock Prediction{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-primary">Facebook Stock Prediction</h1>
+    <form method="POST" action="{% url 'predict' 'facebook' %}" class="bg-dark p-4 rounded border border-primary">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Predict</button>
+    </form>
+
+
+    <div class="mt-4">
+        <h3 class="text-light">Predicted Prices Variation</h3>
+        <canvas id="priceChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var ctx = document.getElementById('priceChart').getContext('2d');
+var priceChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ dates|safe }},
+        datasets: [{
+            label: 'Prices',
+            data: {{ prices|safe }},
+            backgroundColor: 'rgba(59, 89, 152, 0.2)', // Light blue with transparency
+            borderColor: 'rgba(59, 89, 152, 1)', // Solid blue
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#fff' // White ticks for x-axis
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#fff' // White ticks for y-axis
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#fff' // White legend labels
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

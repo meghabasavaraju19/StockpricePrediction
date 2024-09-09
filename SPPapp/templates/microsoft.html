@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Microsoft Stock Prediction{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-info">Microsoft Stock Prediction</h1>
+    <form method="POST" action="{% url 'predict' 'microsoft' %}" class="bg-dark p-4 rounded border border-info">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-info">Predict</button>
+    </form>
+
+    
+    <div class="mt-4">
+        <h3 class="text-light">Predicted Prices Variation</h3>
+        <canvas id="priceChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var ctx = document.getElementById('priceChart').getContext('2d');
+var priceChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ dates|safe }},
+        datasets: [{
+            label: 'Prices',
+            data: {{ prices|safe }},
+            backgroundColor: 'rgba(23, 162, 184, 0.2)', // Light teal with transparency
+            borderColor: 'rgba(23, 162, 184, 1)', // Solid teal
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#fff' // White ticks for x-axis
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#fff' // White ticks for y-axis
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#fff' // White legend labels
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Amazon Stock Prediction{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Introduction and Prediction Form -->
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="text-warning">Amazon Stock Prediction</h1>
+            <p class="text-light">Welcome to the Amazon Stock Prediction page. Utilize our advanced prediction model to forecast Amazon's stock prices with high accuracy. Enter the details below to get predictions for Amazon's stock performance.</p>
+
+            <!-- Prediction Form -->
+            <form method="POST" action="{% url 'predict' company %}" class="bg-dark p-4 rounded border border-danger">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-danger">Predict</button>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-light border-danger mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">Amazon Stock Insights</h5>
+                    <p class="card-text">Amazon, known for its e-commerce dominance and cloud computing services, is one of the leading tech giants. Our prediction model analyzes historical stock data to provide insights into future performance. Stay informed and make strategic decisions with our accurate predictions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart for Predicted Prices -->
+    <div class="mt-4">
+        <h3 class="text-light">Amazon Stock Price Prediction</h3>
+        <canvas id="priceChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var ctx = document.getElementById('priceChart').getContext('2d');
+var priceChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ dates|safe }},
+        datasets: [{
+            label: 'Prices',
+            data: {{ prices|safe }},
+            backgroundColor: 'rgba(255, 255, 0, 0.2)', // Yellow with transparency
+            borderColor: 'rgba(255, 0, 0, 1)', // Solid red
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#fff' // White ticks for x-axis
+                },
+                grid: {
+                    color: '#444' // Darker grid lines for x-axis
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#fff' // White ticks for y-axis
+                },
+                grid: {
+                    color: '#444' // Darker grid lines for y-axis
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#fff' // White legend labels
+                }
+            }
+        }
+    }
+});
+</script>
+
+<style>
+    .card { border-radius: 0.5rem; }
+    .jumbotron { background-color: #343a40; }
+</style>
+{% endblock %}

@@ -1,0 +1,65 @@
+<!-- SPPapp/templates/home.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Home - Stock Price Prediction{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center bg-dark text-light py-5">
+    <h1 class="display-4 text-danger">Welcome to the Stock Price Prediction System</h1>
+    <p class="lead mb-4">Leverage our state-of-the-art prediction models to forecast stock prices with remarkable accuracy. Our platform provides comprehensive tools for predicting stock trends for major companies, including Amazon, Apple, Facebook, Google, and Microsoft.</p>
+    <p class="mb-4">Whether you are an investor, analyst, or simply a stock market enthusiast, our system offers valuable insights and predictions to help you make informed decisions. Explore our predictions for leading companies and stay ahead in the dynamic stock market environment.</p>
+    
+    <h3 class="text-light">Get Started with Predictions</h3>
+    <p class="text-muted mb-4">Click on any of the buttons below to predict stock prices for your preferred companies:</p>
+    
+    <div class="btn-group-vertical">
+        <a class="btn btn-danger btn-lg mb-3" href="{% url 'predict' 'amazon' %}" role="button">Predict Amazon</a>
+        <a class="btn btn-success btn-lg mb-3" href="{% url 'predict' 'apple' %}" role="button">Predict Apple</a>
+        <a class="btn btn-primary btn-lg mb-3" href="{% url 'predict' 'facebook' %}" role="button">Predict Facebook</a>
+        <a class="btn btn-info btn-lg mb-3" href="{% url 'predict' 'google' %}" role="button">Predict Google</a>
+        <a class="btn btn-warning btn-lg mb-3" href="{% url 'predict' 'microsoft' %}" role="button">Predict Microsoft</a>
+    </div>
+</div>
+
+<div class="container mt-5 text-light">
+    <h2 class="text-center mb-4">Why Choose Our Prediction System?</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-light border-danger">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">Accurate Predictions</h5>
+                    <p class="card-text">Our advanced algorithms analyze historical data to provide accurate forecasts of future stock prices. Stay ahead of the curve with our reliable predictions.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-light border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success">Comprehensive Analysis</h5>
+                    <p class="card-text">Get detailed insights and analysis on stock trends, including historical data and future projections. Make informed decisions with our comprehensive tools.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-light border-primary">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">User-Friendly Interface</h5>
+                    <p class="card-text">Our platform is designed with a user-friendly interface, making it easy to navigate and access the information you need. Experience seamless interactions with our system.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-danger { background-color: #dc3545; border-color: #dc3545; }
+    .btn-success { background-color: #28a745; border-color: #28a745; }
+    .btn-primary { background-color: #007bff; border-color: #007bff; }
+    .btn-info { background-color: #17a2b8; border-color: #17a2b8; }
+    .btn-warning { background-color: #ffc107; border-color: #ffc107; }
+    .card { border-radius: 0.5rem; }
+    .jumbotron { background-color: #343a40; }
+</style>
+
+{% endblock %}

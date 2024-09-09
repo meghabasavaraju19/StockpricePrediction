@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Stock History{% endblock %}
+
+{% block content %}
+<h1 class="text-center">Stock History</h1>
+<p class="text-center text-muted">Explore detailed historical stock data for various companies. Analyze trends and patterns over time, including stock prices, volumes, highs, and lows.</p>
+
+<div class="container">
+    {% for company in company_data.companies %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title">{{ company.name }} Stock Data</h4>
+            <p class="card-text text-muted">Historical data for {{ company.name }} including prices, volumes, and other metrics.</p>
+            
+            <!-- Chart for Prices -->
+            <div class="chart-container mb-4">
+                <h5 class="text-light">Stock Prices Over Time</h5>
+                <canvas id="chart-{{ company.name }}-prices"></canvas>
+            </div>
+
+            <!-- Chart for Volumes -->
+            <div class="chart-container mb-4">
+                <h5 class="text-light">Trading Volumes Over Time</h5>
+                <canvas id="chart-{{ company.name }}-volumes"></canvas>
+            </div>
+
+            <!-- Chart for High Prices -->
+            <div class="chart-container mb-4">
+                <h5 class="text-light">High Prices Over Time</h5>
+                <canvas id="chart-{{ company.name }}-high"></canvas>
+            </div>
+
+            <!-- Chart for Low Prices -->
+            <div class="chart-container mb-4">
+                <h5 class="text-light">Low Prices Over Time</h5>
+                <canvas id="chart-{{ company.name }}-low"></canvas>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        {% for company in company_data.companies %}
+        // Chart for Prices
+        var ctxPrices = document.getElementById('chart-{{ company.name }}-prices').getContext('2d');
+        new Chart(ctxPrices, {
+            type: 'line',
+            data: {
+                labels: {{ company.dates|safe }},
+                datasets: [{
+                    label: 'Stock Prices',
+                    data: {{ company.prices|safe }},
+                    borderColor: '#dc3545', // Red line
+                    backgroundColor: 'rgba(220, 53, 69, 0.2)', // Red area with opacity
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff'
+                        },
+                        grid: {
+                            color: '#444'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#fff'
+                        },
+                        grid: {
+                            color: '#444'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart for Volumes
+        var ctxVolumes = document.getElementById('chart-{{ company.name }}-volumes').getContext('2d');
+        new Chart(ctxVolumes, {
+            type: 'bar',
+            data: {
+                labels: {{ company.dates|safe }},
+                datasets: [{
+                    label: 'Trading Volumes',
+                    data: {{ company.volumes|safe }},
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)', // Blue area with opacity
+                    borderColor: '#007bff', // Blue line
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff'
+                        },
+                        grid: {
+                            color: '#444'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#fff'
+                        },
+                        grid: {
+                            color: '#444'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart for High Prices
+        var ctxHigh = document.getElementById('chart-{{ company.name }}-high').getContext('2d');
+        new Chart(ctxHigh, {
+            type: 'line',
+            data: {
+                labels: {{ company.dates|safe }},
+                datasets: [{
+                    label: 'High Prices',
+                    data: {{ company.high_prices|safe }},
+                    borderColor: '#28a745', // Green line
+                    backgroundColor: 'rgba(40, 167, 69, 0.2)', // Green area with opacity
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff'
+                        },
+                        grid: {
+                            color: '#444'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#fff'
+                        },
+                        grid: {
+                            color: '#444'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart for Low Prices
+        var ctxLow = document.getElementById('chart-{{ company.name }}-low').getContext('2d');
+        new Chart(ctxLow, {
+            type: 'line',
+            data: {
+                labels: {{ company.dates|safe }},
+                datasets: [{
+                    label: 'Low Prices',
+                    data: {{ company.low_prices|safe }},
+                    borderColor: '#ffc107', // Yellow line
+                    backgroundColor: 'rgba(255, 193, 7, 0.2)', // Yellow area with opacity
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff'
+                        },
+                        grid: {
+                            color: '#444'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#fff'
+                        },
+                        grid: {
+                            color: '#444'
+                        }
+                    }
+                }
+            }
+        });
+        {% endfor %}
+    });
+</script>
+
+{% endblock %}

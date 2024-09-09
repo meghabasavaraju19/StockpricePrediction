@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Prediction Result{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center text-primary">Prediction Result for {{ company }}</h1>
+    <p class="text-center text-muted">Based on the input data and historical trends, here is the prediction result for {{ company }}'s stock price.</p>
+
+    <div class="row">
+        <!-- Prediction Card -->
+        <div class="col-md-12">
+            <div class="card bg-dark text-light border-info">
+                <div class="card-body">
+                    <h4 class="card-title">Predicted Closing Price</h4>
+                    <p class="card-text">The predicted closing price for {{ company }} is <strong class="text-success">${{ prediction }}</strong>.</p>
+                    
+                    <!-- Chart Container -->
+                    <div class="chart-container mt-4">
+                        <canvas id="result-chart"></canvas>
+                    </div>
+
+                    <!-- Additional Insights -->
+                    <div class="mt-4">
+                        <h5 class="card-title">Insights and Analysis</h5>
+                        <p class="card-text">Our prediction model uses historical stock data and advanced algorithms to forecast the closing price. By analyzing trends and patterns, we provide a reliable estimate that can aid in making informed investment decisions.</p>
+                        <p class="card-text">You can use this prediction to compare with actual market performance and adjust your investment strategy accordingly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Chart with Historical Data -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h3 class="text-light text-center">Historical Data Overview</h3>
+            <p class="text-center text-muted">Below is a chart showing historical prices along with the predicted price for {{ company }}. Analyze the trends to understand the market behavior.</p>
+            <div class="chart-container">
+                <canvas id="historical-chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Chart for Prediction Result
+    var ctx = document.getElementById('result-chart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ dates|safe }},
+            datasets: [{
+                label: 'Historical Prices',
+                data: {{ prices|safe }},
+                borderColor: '#dc3545', // Red line
+                backgroundColor: 'rgba(220, 53, 69, 0.2)', // Red area with opacity
+                borderWidth: 2
+            }, {
+                label: 'Predicted Price',
+                data: [{{ prediction }}], // Single point for prediction
+                borderColor: '#ffc107', // Yellow line
+                backgroundColor: 'rgba(255, 193, 7, 0.2)', // Yellow area with opacity
+                borderWidth: 2,
+                pointRadius: 5,
+                pointBackgroundColor: '#ffc107'
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#fff'
+                    },
+                    grid: {
+                        color: '#444'
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: '#fff'
+                    },
+                    grid: {
+                        color: '#444'
+                    }
+                }
+            }
+        }
+    });
+
+    // Chart for Historical Data Overview
+    var ctxHistorical = document.getElementById('historical-chart').getContext('2d');
+    new Chart(ctxHistorical, {
+        type: 'line',
+        data: {
+            labels: {{ dates|safe }},
+            datasets: [{
+                label: 'Historical Prices',
+                data: {{ prices|safe }},
+                borderColor: '#17a2b8', // Teal line
+                backgroundColor: 'rgba(23, 162, 184, 0.2)', // Teal area with opacity
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#fff'
+                    },
+                    grid: {
+                        color: '#444'
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: '#fff'
+                    },
+                    grid: {
+                        color: '#444'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<style>
+    .card { border-radius: 0.5rem; }
+    .chart-container { position: relative; height: 400px; }
+    .text-success { color: #28a745; } /* Green color for predicted price */
+</style>
+{% endblock %}
